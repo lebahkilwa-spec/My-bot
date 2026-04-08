@@ -1,10 +1,18 @@
 const { Telegraf } = require('telegraf');
+const http = require('http'); // خدعة لتشغيل سيرفر وهمي
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// الروابط المباشرة الخام (Raw) - تأكد من صحة اسم المستخدم والمستودع
+// الروابط المباشرة الخام (Raw)
 const IMG_1 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview1.jpg";
 const IMG_2 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview2.jpg";
 const IMG_3 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview3.jpg";
+
+// --- خدعة المنفذ (Port) لإرضاء Render في الخطة المجانية ---
+const server = http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end("Bot is running!");
+});
+server.listen(process.env.PORT || 3000);
 
 bot.start((ctx) => {
     ctx.reply(`🌟 **Welcome to Fenntel** 🌟\n"Your sanctuary of coffee, melodies, and great reads."`, {
