@@ -2,20 +2,21 @@ const { Telegraf } = require('telegraf');
 const http = require('http');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// سيرفر وهمي لإبقاء الخدمة تعمل على Render المجاني
+// السيرفر الوهمي لضمان استمرار الخدمة على Render
 const server = http.createServer((req, res) => {
     res.writeHead(200);
-    res.end("Bot is Active");
+    res.end("Fenntel Bot is Live");
 });
 server.listen(process.env.PORT || 3000);
 
 bot.start((ctx) => {
-    ctx.reply(`🌟 **Welcome to Fenntel** 🌟\n\nYour simple gateway to digital growth and psychological mastery.`, {
+    // إعادة الجملة الخاصة بك كما طلبت تماماً
+    ctx.reply(`🌟 **مرحبا بك في fenntale حيث القهوة والموسيقى والكتاب** 🌟`, {
         parse_mode: 'Markdown',
         reply_markup: {
             inline_keyboard: [
                 [{ text: "📖 Get FREE Book (One)", callback_data: "send_free" }],
-                [{ text: "💳 Purchase Premium Book (Two)", callback_data: "show_payment" }],
+                [{ text: "💎 UNBEATABLE MIND (Premium)", callback_data: "show_premium_info" }],
                 [{ text: "📞 Contact Support", url: "https://t.me/Mohamedlebah" }]
             ]
         }
@@ -23,23 +24,57 @@ bot.start((ctx) => {
 });
 
 bot.action('send_free', (ctx) => {
-    ctx.reply('Sending your free gift... 🎁');
+    ctx.reply('Preparing your gift... 🎁');
     ctx.replyWithDocument({ source: 'one.book.pdf' }).catch(err => {
-        ctx.reply('The file is being prepared, please try again in a moment.');
+        ctx.reply('الملف قيد التجهيز، يرجى المحاولة مرة أخرى بعد قليل.');
     });
 });
 
-bot.action('show_payment', (ctx) => {
-    ctx.reply(`🏦 **Order Details: Premium Book (Two)**\n\nTo complete your purchase, please transfer **$12.79** to:\n\n\`GB64CLJU04130741739018\`\n\n⚠️ After payment, send the screenshot to @Mohamedlebah to receive your file.`, { 
+bot.action('show_premium_info', (ctx) => {
+    const marketingText = `
+🏆 **UNBEATABLE MIND: The Masterclass** 🏆
+
+Are you ready to transcend your limits? 🚀
+
+This isn't just a book; it's a **Transformation Blueprint**. After the success of our first edition, we dive deeper into the mechanics of the human psyche to help you build a mind that stands firm against any chaos.
+
+✨ **Inside this Premium Edition:**
+• **The Stoic Core:** Mastering emotional resilience.
+• **Neural Rewiring:** Breaking the chains of old habits.
+• **Elite Performance:** Psychological tools used by the top 1%.
+
+"Your mind is your greatest asset. Invest in it wisely." ☕️📚
+
+💰 **Price: $12.79**
+    `;
+
+    ctx.reply(marketingText, {
         parse_mode: 'Markdown',
         reply_markup: {
-            inline_keyboard: [[{ text: "⬅️ Back to Menu", callback_data: "start_over" }]]
+            inline_keyboard: [
+                [{ text: "💳 Secure Your Copy Now", callback_data: "show_payment" }],
+                [{ text: "⬅️ Back", callback_data: "start_over" }]
+            ]
         }
     });
 });
 
+bot.action('show_payment', (ctx) => {
+    ctx.reply(`🏦 **Payment Details**\n\nTransfer **$12.79** to:\n\`GB64CLJU04130741739018\`\n\n⚠️ Send the screenshot to @Mohamedlebah`, { parse_mode: 'Markdown' });
+});
+
 bot.action('start_over', (ctx) => {
-    ctx.editMessageText("🌟 Choose an option:");
+    // العودة مع نفس الجملة الأصلية
+    ctx.editMessageText(`🌟 **مرحبا بك في fenntale حيث القهوة والموسيقى والكتاب** 🌟`, {
+        parse_mode: 'Markdown',
+        reply_markup: {
+            inline_keyboard: [
+                [{ text: "📖 Get FREE Book (One)", callback_data: "send_free" }],
+                [{ text: "💎 UNBEATABLE MIND (Premium)", callback_data: "show_premium_info" }],
+                [{ text: "📞 Contact Support", url: "https://t.me/Mohamedlebah" }]
+            ]
+        }
+    });
 });
 
 bot.launch();
