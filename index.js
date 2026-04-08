@@ -1,7 +1,7 @@
 const { Telegraf } = require('telegraf');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// الروابط المباشرة للصور من GitHub الخام
+// الروابط المباشرة الخام (Raw) - تأكد من صحة اسم المستخدم والمستودع
 const IMG_1 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview1.jpg";
 const IMG_2 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview2.jpg";
 const IMG_3 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview3.jpg";
@@ -30,20 +30,17 @@ bot.action('buy_premium', async (ctx) => {
 
 Are you ready to transcend your limits? 🚀
 
-This isn't just a book; it's a **Transformation Blueprint**. We dive deep into the psyche to build a mind that stands firm against any chaos.
+This isn't just a book; it's a **Transformation Blueprint**.
 
 ✨ **Inside this Premium Edition:**
 • **The Stoic Core:** Mastering emotional resilience.
 • **Neural Rewiring:** Breaking the chains of old habits.
 • **Elite Performance:** Psychological tools used by the top 1%.
 
-"Your mind is your greatest asset. Invest in it wisely." ☕️📚
-
 💰 **Price: $12.79**
     `;
 
     try {
-        // إرسال الصور كألبوم بروابط Raw مباشرة
         await ctx.replyWithMediaGroup([
             { type: 'photo', media: IMG_1 },
             { type: 'photo', media: IMG_2 },
