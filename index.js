@@ -14,8 +14,8 @@ bot.start((ctx) => {
 });
 
 bot.action('send_b1', (ctx) => {
-    ctx.reply('Preparing your book... 🎁');
-    // هنا قمت بتحديث الاسم ليتطابق مع ما رفعته أنت في جيت هاب
+    ctx.reply('Preparing your free gift... 🎁');
+    // تأكد أن الاسم هنا مطابق تماماً لاسم الملف في GitHub
     ctx.replyWithDocument({ source: 'one.book.pdf' }).catch((err) => {
         ctx.reply('Error: File one.book.pdf not found.');
     });
