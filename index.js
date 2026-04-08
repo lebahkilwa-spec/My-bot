@@ -1,26 +1,21 @@
 const { Telegraf } = require('telegraf');
-const http = require('http'); // خدعة لتشغيل سيرفر وهمي
+const http = require('http');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// الروابط المباشرة الخام (Raw)
-const IMG_1 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview1.jpg";
-const IMG_2 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview2.jpg";
-const IMG_3 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview3.jpg";
-
-// --- خدعة المنفذ (Port) لإرضاء Render في الخطة المجانية ---
+// سيرفر وهمي لإبقاء الخدمة تعمل على Render المجاني
 const server = http.createServer((req, res) => {
     res.writeHead(200);
-    res.end("Bot is running!");
+    res.end("Bot is Active");
 });
 server.listen(process.env.PORT || 3000);
 
 bot.start((ctx) => {
-    ctx.reply(`🌟 **Welcome to Fenntel** 🌟\n"Your sanctuary of coffee, melodies, and great reads."`, {
+    ctx.reply(`🌟 **Welcome to Fenntel** 🌟\n\nYour simple gateway to digital growth and psychological mastery.`, {
         parse_mode: 'Markdown',
         reply_markup: {
             inline_keyboard: [
-                [{ text: "📖 Download FREE Book (One)", callback_data: "send_free" }],
-                [{ text: "💎 Buy Premium Book (Two)", callback_data: "buy_premium" }],
+                [{ text: "📖 Get FREE Book (One)", callback_data: "send_free" }],
+                [{ text: "💳 Purchase Premium Book (Two)", callback_data: "show_payment" }],
                 [{ text: "📞 Contact Support", url: "https://t.me/Mohamedlebah" }]
             ]
         }
@@ -28,59 +23,23 @@ bot.start((ctx) => {
 });
 
 bot.action('send_free', (ctx) => {
-    ctx.reply('Preparing your gift... 🎁');
-    ctx.replyWithDocument({ source: 'one.book.pdf' }).catch(err => ctx.reply('File not found.'));
-});
-
-bot.action('buy_premium', async (ctx) => {
-    const marketingText = `
-🏆 **UNBEATABLE MIND: The Masterclass** 🏆
-
-Are you ready to transcend your limits? 🚀
-
-This isn't just a book; it's a **Transformation Blueprint**.
-
-✨ **Inside this Premium Edition:**
-• **The Stoic Core:** Mastering emotional resilience.
-• **Neural Rewiring:** Breaking the chains of old habits.
-• **Elite Performance:** Psychological tools used by the top 1%.
-
-💰 **Price: $12.79**
-    `;
-
-    try {
-        await ctx.replyWithMediaGroup([
-            { type: 'photo', media: IMG_1 },
-            { type: 'photo', media: IMG_2 },
-            { type: 'photo', media: IMG_3, caption: marketingText, parse_mode: 'Markdown' }
-        ]);
-
-        await ctx.reply("✨ **Ready to start your journey?**", {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: "💳 Secure Your Copy Now", callback_data: "show_payment" }],
-                    [{ text: "⬅️ Back", callback_data: "start_over" }]
-                ]
-            }
-        });
-    } catch (error) {
-        ctx.reply(marketingText, {
-            parse_mode: 'Markdown',
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: "💳 Secure Your Copy Now", callback_data: "show_payment" }]
-                ]
-            }
-        });
-    }
+    ctx.reply('Sending your free gift... 🎁');
+    ctx.replyWithDocument({ source: 'one.book.pdf' }).catch(err => {
+        ctx.reply('The file is being prepared, please try again in a moment.');
+    });
 });
 
 bot.action('show_payment', (ctx) => {
-    ctx.reply(`🏦 **Payment Details**\n\nTransfer **$12.79** to:\n\`GB64CLJU04130741739018\`\n\n⚠️ Send the screenshot to @Mohamedlebah`, { parse_mode: 'Markdown' });
+    ctx.reply(`🏦 **Order Details: Premium Book (Two)**\n\nTo complete your purchase, please transfer **$12.79** to:\n\n\`GB64CLJU04130741739018\`\n\n⚠️ After payment, send the screenshot to @Mohamedlebah to receive your file.`, { 
+        parse_mode: 'Markdown',
+        reply_markup: {
+            inline_keyboard: [[{ text: "⬅️ Back to Menu", callback_data: "start_over" }]]
+        }
+    });
 });
 
 bot.action('start_over', (ctx) => {
-    ctx.reply("🌟 Choose an option:");
+    ctx.editMessageText("🌟 Choose an option:");
 });
 
 bot.launch();
