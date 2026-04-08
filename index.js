@@ -1,18 +1,8 @@
 const { Telegraf } = require('telegraf');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// 1. رسالة الترحيب
 bot.start((ctx) => {
-    const welcomeMsg = `
-🌟 **Welcome to Fenntel** 🌟
-"Your sanctuary of coffee, melodies, and great reads."
-
-Explore our collection of digital books designed to inspire your journey.
-
-👇 **Please choose an option:**
-    `;
-
-    ctx.reply(welcomeMsg, {
+    ctx.reply(`🌟 **Welcome to Fenntel** 🌟\n"Your sanctuary of coffee, melodies, and great reads."`, {
         parse_mode: 'Markdown',
         reply_markup: {
             inline_keyboard: [
@@ -24,20 +14,19 @@ Explore our collection of digital books designed to inspire your journey.
     });
 });
 
-// 2. إرسال الكتاب المجاني
 bot.action('send_free', (ctx) => {
     ctx.reply('Preparing your gift... 🎁');
     ctx.replyWithDocument({ source: 'one.book.pdf' }).catch(err => ctx.reply('File not found.'));
 });
 
-// 3. صفحة المنتج (النص التسويقي البارع + الصورة)
+// --- عرض ألبوم الصور مع النص التسويقي ---
 bot.action('buy_premium', async (ctx) => {
     const marketingText = `
 🏆 **UNBEATABLE MIND: The Masterclass** 🏆
 
 Are you ready to transcend your limits? 🚀
 
-This isn't just a book; it's a **Transformation Blueprint**. After the success of our first edition, we dive deeper into the mechanics of the human psyche to help you build a mind that stands firm against any chaos.
+This isn't just a book; it's a **Transformation Blueprint**. We dive deep into the mechanics of the psyche to build a mind that stands firm against any chaos.
 
 ✨ **Inside this Premium Edition:**
 • **The Stoic Core:** Mastering emotional resilience.
@@ -50,21 +39,15 @@ This isn't just a book; it's a **Transformation Blueprint**. After the success o
     `;
 
     try {
-        // يحاول إرسال الصورة مع النص التسويقي
-        await ctx.replyWithPhoto({ source: 'preview.jpg' }, {
-            caption: marketingText,
-            parse_mode: 'Markdown',
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: "💳 Secure Your Copy Now", callback_data: "show_payment" }],
-                    [{ text: "⬅️ Back to Menu", callback_data: "start_over" }]
-                ]
-            }
-        });
-    } catch (error) {
-        // إذا لم يجد الصورة، يرسل النص فقط لضمان عمل البوت
-        ctx.reply(marketingText, {
-            parse_mode: 'Markdown',
+        // إرسال مجموعة صور (Album)
+        await ctx.replyWithMediaGroup([
+            { type: 'photo', media: { source: 'preview1.jpg' } },
+            { type: 'photo', media: { source: 'preview2.jpg' } },
+            { type: 'photo', media: { source: 'preview3.jpg' }, caption: marketingText, parse_mode: 'Markdown' }
+        ]);
+
+        // إرسال أزرار الدفع في رسالة منفصلة تحت الألبوم
+        await ctx.reply("✨ **Ready to start your journey?**", {
             reply_markup: {
                 inline_keyboard: [
                     [{ text: "💳 Secure Your Copy Now", callback_data: "show_payment" }],
@@ -72,28 +55,25 @@ This isn't just a book; it's a **Transformation Blueprint**. After the success o
                 ]
             }
         });
+
+    } catch (error) {
+        // في حال نقص أي صورة، يرسل النص فقط لضمان استمرار العمل
+        ctx.reply(marketingText, {
+            parse_mode: 'Markdown',
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: "💳 Secure Your Copy Now", callback_data: "show_payment" }]
+                ]
+            }
+        });
     }
 });
 
-// 4. تفاصيل الدفع
 bot.action('show_payment', (ctx) => {
-    const paymentMsg = `
-🏦 **Payment Details (International Transfer)**
-
-To receive your Premium copy, please complete the transfer:
-
-💳 **IBAN (Grey Account):**
-\`GB64CLJU04130741739018\`
-
-📸 **Next Step:**
-Send a screenshot of your receipt to @Mohamedlebah. Your book will be delivered to you personally upon verification. 📥
-    `;
-    ctx.reply(paymentMsg, { parse_mode: 'Markdown' });
+    ctx.reply(`🏦 **Payment Details**\n\nTransfer **$12.79** to:\n\`GB64CLJU04130741739018\`\n\n⚠️ Send the screenshot to @Mohamedlebah`, { parse_mode: 'Markdown' });
 });
 
-// 5. العودة للبداية
-bot.action('start_over', async (ctx) => {
-    await ctx.deleteMessage();
+bot.action('start_over', (ctx) => {
     ctx.reply("🌟 Choose an option:");
 });
 
