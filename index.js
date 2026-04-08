@@ -1,11 +1,10 @@
 const { Telegraf } = require('telegraf');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// Main Welcome Message (English Only)
 bot.start((ctx) => {
     const welcomeMsg = `
 🌟 **Welcome to Fenntale** 🌟
-"Your sanctuary of coffee, melodies, and great reads."
+"Fenntale: Your sanctuary of coffee, melodies, and great reads."
 
 Explore our collection of digital books designed to inspire your journey.
 
@@ -16,28 +15,26 @@ Explore our collection of digital books designed to inspire your journey.
         parse_mode: 'Markdown',
         reply_markup: {
             inline_keyboard: [
-                [{ text: "📖 Download FREE Book (one.book)", callback_data: "send_free" }],
-                [{ text: "💎 Buy Premium Book (two.book)", callback_data: "buy_premium" }],
+                [{ text: "📖 Download FREE Book (One)", callback_data: "send_free" }],
+                [{ text: "💎 Buy Premium Book (Two)", callback_data: "buy_premium" }],
                 [{ text: "📞 Contact Support", url: "https://t.me/Mohamedlebah" }]
             ]
         }
     });
 });
 
-// Action for FREE Book
 bot.action('send_free', (ctx) => {
     ctx.reply('Preparing your gift... 🎁');
     ctx.replyWithDocument({ source: 'one.book.pdf' }).catch((err) => {
-        ctx.reply('Error: "one.book.pdf" not found on server.');
+        ctx.reply('Error: File not found.');
     });
 });
 
-// Action for Premium Book (Payment Info)
 bot.action('buy_premium', (ctx) => {
     const paymentMsg = `
 💳 **Payment Details**
 
-To get your copy of **"two.book"**, please transfer **$12.79** to:
+To get your copy of **"Two Book"**, please transfer **$12.79** to:
 
 🏦 **Grey Account (IBAN):**
 \`GB64CLJU04130741739018\`
