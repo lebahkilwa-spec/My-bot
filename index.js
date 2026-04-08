@@ -1,22 +1,30 @@
 const { Telegraf } = require('telegraf');
-const http = require('http');
+const http = require('http'); 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// السيرفر الوهمي لضمان استمرار الخدمة على Render
+// --- Dummy server to keep the bot alive on Render Free Tier ---
 const server = http.createServer((req, res) => {
     res.writeHead(200);
-    res.end("Fenntel Bot is Live");
+    res.end("Fenntale Bot is Active");
 });
 server.listen(process.env.PORT || 3000);
 
 bot.start((ctx) => {
-    // إعادة الجملة الخاصة بك كما طلبت تماماً
-    ctx.reply(`🌟 **مرحبا بك في fenntale حيث القهوة والموسيقى والكتاب** 🌟`, {
+    const welcomeMsg = `
+🌟 **Welcome to Fenntale** 🌟
+"Fenntale: Your sanctuary of coffee, melodies, and great reads."
+
+Explore our collection of digital books designed to inspire your journey.
+
+👇 **Please choose an option:**
+    `;
+
+    ctx.reply(welcomeMsg, {
         parse_mode: 'Markdown',
         reply_markup: {
             inline_keyboard: [
-                [{ text: "📖 Get FREE Book (One)", callback_data: "send_free" }],
-                [{ text: "💎 UNBEATABLE MIND (Premium)", callback_data: "show_premium_info" }],
+                [{ text: "📖 Download FREE Book (One)", callback_data: "send_free" }],
+                [{ text: "💎 Buy Premium Book (Two)", callback_data: "buy_premium" }],
                 [{ text: "📞 Contact Support", url: "https://t.me/Mohamedlebah" }]
             ]
         }
@@ -25,56 +33,24 @@ bot.start((ctx) => {
 
 bot.action('send_free', (ctx) => {
     ctx.reply('Preparing your gift... 🎁');
-    ctx.replyWithDocument({ source: 'one.book.pdf' }).catch(err => {
-        ctx.reply('الملف قيد التجهيز، يرجى المحاولة مرة أخرى بعد قليل.');
+    ctx.replyWithDocument({ source: 'one.book.pdf' }).catch((err) => {
+        ctx.reply('Error: File not found.');
     });
 });
 
-bot.action('show_premium_info', (ctx) => {
-    const marketingText = `
-🏆 **UNBEATABLE MIND: The Masterclass** 🏆
+bot.action('buy_premium', (ctx) => {
+    const paymentMsg = `
+💳 **Payment Details**
 
-Are you ready to transcend your limits? 🚀
+To get your copy of **"Two Book"**, please transfer **$12.79** to:
 
-This isn't just a book; it's a **Transformation Blueprint**. After the success of our first edition, we dive deeper into the mechanics of the human psyche to help you build a mind that stands firm against any chaos.
+🏦 **Grey Account (IBAN):**
+\`GB64CLJU04130741739018\`
 
-✨ **Inside this Premium Edition:**
-• **The Stoic Core:** Mastering emotional resilience.
-• **Neural Rewiring:** Breaking the chains of old habits.
-• **Elite Performance:** Psychological tools used by the top 1%.
-
-"Your mind is your greatest asset. Invest in it wisely." ☕️📚
-
-💰 **Price: $12.79**
+⚠️ **Important:**
+After payment, please send a **screenshot** of the receipt to @Mohamedlebah to receive your book instantly.
     `;
-
-    ctx.reply(marketingText, {
-        parse_mode: 'Markdown',
-        reply_markup: {
-            inline_keyboard: [
-                [{ text: "💳 Secure Your Copy Now", callback_data: "show_payment" }],
-                [{ text: "⬅️ Back", callback_data: "start_over" }]
-            ]
-        }
-    });
-});
-
-bot.action('show_payment', (ctx) => {
-    ctx.reply(`🏦 **Payment Details**\n\nTransfer **$12.79** to:\n\`GB64CLJU04130741739018\`\n\n⚠️ Send the screenshot to @Mohamedlebah`, { parse_mode: 'Markdown' });
-});
-
-bot.action('start_over', (ctx) => {
-    // العودة مع نفس الجملة الأصلية
-    ctx.editMessageText(`🌟 **مرحبا بك في fenntale حيث القهوة والموسيقى والكتاب** 🌟`, {
-        parse_mode: 'Markdown',
-        reply_markup: {
-            inline_keyboard: [
-                [{ text: "📖 Get FREE Book (One)", callback_data: "send_free" }],
-                [{ text: "💎 UNBEATABLE MIND (Premium)", callback_data: "show_premium_info" }],
-                [{ text: "📞 Contact Support", url: "https://t.me/Mohamedlebah" }]
-            ]
-        }
-    });
+    ctx.reply(paymentMsg, { parse_mode: 'Markdown' });
 });
 
 bot.launch();
