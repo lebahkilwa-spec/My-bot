@@ -1,8 +1,10 @@
 const { Telegraf } = require('telegraf');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// رابط المستودع الخاص بك لجلب الصور منه مباشرة
-const GITHUB_URL = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/";
+// الروابط المباشرة للصور من GitHub الخام
+const IMG_1 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview1.jpg";
+const IMG_2 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview2.jpg";
+const IMG_3 = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/preview3.jpg";
 
 bot.start((ctx) => {
     ctx.reply(`🌟 **Welcome to Fenntel** 🌟\n"Your sanctuary of coffee, melodies, and great reads."`, {
@@ -28,7 +30,7 @@ bot.action('buy_premium', async (ctx) => {
 
 Are you ready to transcend your limits? 🚀
 
-This isn't just a book; it's a **Transformation Blueprint**. After the success of our first edition, we dive deeper into the mechanics of the human psyche to help you build a mind that stands firm against any chaos.
+This isn't just a book; it's a **Transformation Blueprint**. We dive deep into the psyche to build a mind that stands firm against any chaos.
 
 ✨ **Inside this Premium Edition:**
 • **The Stoic Core:** Mastering emotional resilience.
@@ -41,11 +43,11 @@ This isn't just a book; it's a **Transformation Blueprint**. After the success o
     `;
 
     try {
-        // إرسال الصور كروابط مباشرة لضمان ظهورها
+        // إرسال الصور كألبوم بروابط Raw مباشرة
         await ctx.replyWithMediaGroup([
-            { type: 'photo', media: GITHUB_URL + 'preview1.jpg' },
-            { type: 'photo', media: GITHUB_URL + 'preview2.jpg' },
-            { type: 'photo', media: GITHUB_URL + 'preview3.jpg', caption: marketingText, parse_mode: 'Markdown' }
+            { type: 'photo', media: IMG_1 },
+            { type: 'photo', media: IMG_2 },
+            { type: 'photo', media: IMG_3, caption: marketingText, parse_mode: 'Markdown' }
         ]);
 
         await ctx.reply("✨ **Ready to start your journey?**", {
@@ -56,9 +58,7 @@ This isn't just a book; it's a **Transformation Blueprint**. After the success o
                 ]
             }
         });
-
     } catch (error) {
-        console.log(error);
         ctx.reply(marketingText, {
             parse_mode: 'Markdown',
             reply_markup: {
