@@ -1,6 +1,9 @@
 const { Telegraf } = require('telegraf');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
+// رابط المستودع الخاص بك لجلب الصور منه مباشرة
+const GITHUB_URL = "https://raw.githubusercontent.com/lebahkilwa-spec/roboti/main/";
+
 bot.start((ctx) => {
     ctx.reply(`🌟 **Welcome to Fenntel** 🌟\n"Your sanctuary of coffee, melodies, and great reads."`, {
         parse_mode: 'Markdown',
@@ -19,14 +22,13 @@ bot.action('send_free', (ctx) => {
     ctx.replyWithDocument({ source: 'one.book.pdf' }).catch(err => ctx.reply('File not found.'));
 });
 
-// --- عرض ألبوم الصور مع النص التسويقي ---
 bot.action('buy_premium', async (ctx) => {
     const marketingText = `
 🏆 **UNBEATABLE MIND: The Masterclass** 🏆
 
 Are you ready to transcend your limits? 🚀
 
-This isn't just a book; it's a **Transformation Blueprint**. We dive deep into the mechanics of the psyche to build a mind that stands firm against any chaos.
+This isn't just a book; it's a **Transformation Blueprint**. After the success of our first edition, we dive deeper into the mechanics of the human psyche to help you build a mind that stands firm against any chaos.
 
 ✨ **Inside this Premium Edition:**
 • **The Stoic Core:** Mastering emotional resilience.
@@ -39,14 +41,13 @@ This isn't just a book; it's a **Transformation Blueprint**. We dive deep into t
     `;
 
     try {
-        // إرسال مجموعة صور (Album)
+        // إرسال الصور كروابط مباشرة لضمان ظهورها
         await ctx.replyWithMediaGroup([
-            { type: 'photo', media: { source: 'preview1.jpg' } },
-            { type: 'photo', media: { source: 'preview2.jpg' } },
-            { type: 'photo', media: { source: 'preview3.jpg' }, caption: marketingText, parse_mode: 'Markdown' }
+            { type: 'photo', media: GITHUB_URL + 'preview1.jpg' },
+            { type: 'photo', media: GITHUB_URL + 'preview2.jpg' },
+            { type: 'photo', media: GITHUB_URL + 'preview3.jpg', caption: marketingText, parse_mode: 'Markdown' }
         ]);
 
-        // إرسال أزرار الدفع في رسالة منفصلة تحت الألبوم
         await ctx.reply("✨ **Ready to start your journey?**", {
             reply_markup: {
                 inline_keyboard: [
@@ -57,7 +58,7 @@ This isn't just a book; it's a **Transformation Blueprint**. We dive deep into t
         });
 
     } catch (error) {
-        // في حال نقص أي صورة، يرسل النص فقط لضمان استمرار العمل
+        console.log(error);
         ctx.reply(marketingText, {
             parse_mode: 'Markdown',
             reply_markup: {
